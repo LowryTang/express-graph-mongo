@@ -1,6 +1,7 @@
 module.exports = {
   // app name
-  name: 'events',
+  appName: 'events',
+  debug: true,
 
   // log file location
   logDir: './logs',

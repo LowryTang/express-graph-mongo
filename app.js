@@ -1,20 +1,25 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const cors = require('cors')
 const helmet = require('helmet')
+const responseTime = require('response-time')
+const log4js = require('log4js')
+const logger = require('./common/logger')
+const createServer = require('./graphql/createServer')
 
+// init mongo db.
 require('./models')
-const users = require('./routes/users')
-
+// init express server
 const app = express()
 
-app.use(require('response-time')())
+app.use(responseTime())
 app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(log4js.connectLogger(logger.getLogger('access'), { level: 'info' }))
 
-app.use('/api/v1/graphql', cors(), users)
+// setup graphql server
+createServer(app)
 
 module.exports = app
